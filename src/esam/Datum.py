@@ -1,16 +1,24 @@
-import Constants as c
 import logging
+import Constants as c
+from SelfRegistering import SelfRegistering
 
 #A Datum is a base class for any datum type that you would like to find trends between.
 #This class is intended to be derived from and added to.
 #The members of this class are helpful labels along with the ability to invalidate a datum.
-class Datum(object):
+class Datum(SelfRegistering):
+
+    #Don't worry about this.
+    #If you really want to know, look at SelfRegistering.
+    def __new__(cls, name):
+        return object.__new__(cls)
+
     def __init__(self, name=c.INVALID_NAME, number=0):
+        logging.debug("init Datum")
 
         self.number = number
         self.name = name
         self.colorId = "" #a unique color to help identify trends
-        
+
         #A unique id states that any 2 Data with the same id are, in fact, the same, regardless of what else might vary.
         #This should be a time-based value, etc.
         #For example, if you measure some chemical species that elutes off a column at a given rate, it won't matter how much eluate is present between different runs of the experiment, the time taken to observe the substance uniquely identifies that species.
@@ -69,34 +77,3 @@ class Datum(object):
             return False;
 
         return selfValue > compareValue
-
-
-    #This is not for you.
-
-    #Self registration for use with json loading.
-    #see: https://stackoverflow.com/questions/55973284/how-to-create-self-registering-factory-in-python/55973426
-
-    class Unknown(Exception): pass
-
-    @classmethod
-    def get_all_subclasses(cls):
-        for subclass in cls.__subclasses__():
-            yield subclass
-            for subclass in subclass.get_all_subclasses():
-                yield subclass
-
-    #TODO: Why is this necessary?
-    @classmethod
-    def get_name(cls, s):
-        return s.lower()
-
-    def __new__(cls, name):
-        name = cls.get_name(name)
-        for subclass in cls.get_all_subclasses():
-            if subclass.name == name:
-                # Using "object" base class method avoids recursion here.
-                return object.__new__(subclass)
-        else:  # no subclass with matching name found (and no default defined)
-            raise Datum.Unknown(f'No known Datum of name {name}')
-
-

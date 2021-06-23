@@ -4,7 +4,7 @@ import argparse
 import logging
 import Constants as c
 from DataContainer import DataContainer
-from Functors import FunctorBase
+from UserFunctor import UserFunctor
 
 #SAM: a base class for all Sample analysis and managers.
 #A Sam is a functor and can be executed as such.
@@ -16,12 +16,11 @@ from Functors import FunctorBase
 #   mysam = MySAM()
 #   mysam()
 #NOTE: Diamond inheritance of Datum.
-class SAM(DataContainer, FunctorBase):
+class SAM(DataContainer, UserFunctor):
 
     def __init__(self, name=c.INVALID_NAME, descriptionStr="Sample Analysis and Manager. Not all arguments will apply to all workflows."):
         self.SetupLogging()
-        super(DataContainer,self).__init__(name) #name here should be overwritten...
-        super(FunctorBase,self).__init__(name) #...by name here.
+        super().__init__(name)
         self.argparser = argparse.ArgumentParser(description = descriptionStr)
         self.args = None
         self.AddArgs()
@@ -29,7 +28,7 @@ class SAM(DataContainer, FunctorBase):
         #All of the following containers should be populated with FunctorBases.
         #These will be called with a filename, in the case of inputs and outputs, or *this, in the case of analysis.
         #NOTE: The name of the FunctorBases will be used to select a single instance from the relevant list, anytime there is only 1 format specified in the self.args.
-        #For example if we have input formats ['A', 'B', 'C'] and the user specifies -if C, only the FunctorBase of name 'C' will be called.
+        #For example if we have input formats ['A', 'B', 'C'] and the user specifies -if C, only the UserFunctor of name 'C' will be called.
         #See the methods below for additional details.
         self.configFormats = DataContainer("Config Formats")
         self.inputFormats = DataContainer("Input Formats")
@@ -92,7 +91,7 @@ class SAM(DataContainer, FunctorBase):
         if (not self.args.std):
             logging.warn("No standard specified, some analyses may fail")
 
-    #FunctorBase required method
+    #UserFunctor required method
     #Ignores data.
     def UserFunction(self, data):
         self.ParseArgs()

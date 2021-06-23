@@ -11,7 +11,7 @@ from Datum import Datum
 #NOTE: DataContainers are, themselves Data. Thus, you can nest your child classes however you would like.
 class DataContainer(Datum):
     def __init__(self, name=c.INVALID_NAME):
-        super(Datum, self).__init__(name)
+        super().__init__(name)
         self.data = []
 
     #RETURNS: an empty, invalid Datum.

@@ -8,7 +8,7 @@ from Datum import Datum
 class UserFunctor(ABC, Datum):
 
     def __init__(self, name=c.INVALID_NAME):
-        super(Datum, self).__init__(name)
+        super().__init__(name)
 
     #Override this and do whatever!
     #This is purposefully vague.
