@@ -10,7 +10,9 @@
 #Self registration for use with json loading.
 #see: https://stackoverflow.com/questions/55973284/how-to-create-self-registering-factory-in-python/55973426
 
+import os, sys
 import logging
+import pkgutil
 
 class SelfRegistering(object):
 
@@ -40,6 +42,9 @@ class SelfRegistering(object):
 
 
 def RegisterAllClassesInDirectory(directory):
+    logging.debug(f"Loading SelfRegistering classes in {directory}")
+    # logging.debug(f"Available files: {os.listdir(directory)}")
     for importer, datumFile, _ in pkgutil.iter_modules([directory]):
+        logging.debug(f"Found {datumFile} with {importer}")
         if datumFile not in sys.modules and datumFile != 'main':
             module = importer.find_module(datumFile).load_module(datumFile)
