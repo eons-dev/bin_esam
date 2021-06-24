@@ -12,6 +12,7 @@ def test_datum_import():
     #Before importing data, instantiating a child should fail.
     with pytest.raises(Exception):
         SelfRegistering("DoesStuffDatum")
+        assert(false) # just in case something was missed.
 
     #Load up our child classes.
     RegisterAllClassesInDirectory(os.path.join(os.path.dirname(os.path.abspath(__file__)),"data"))

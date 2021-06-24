@@ -1,15 +1,16 @@
 import logging
 import Constants as c
 from SelfRegistering import SelfRegistering
+from Serializable import Serializable
 
 #A Datum is a base class for any datum type that you would like to find trends between.
 #This class is intended to be derived from and added to.
 #The members of this class are helpful labels along with the ability to invalidate a datum.
-class Datum(SelfRegistering):
+class Datum(SelfRegistering, Serializable):
 
     #Don't worry about this.
     #If you really want to know, look at SelfRegistering.
-    def __new__(cls, name):
+    def __new__(cls, *args, **kwargs):
         return object.__new__(cls)
 
     def __init__(self, name=c.INVALID_NAME, number=0):

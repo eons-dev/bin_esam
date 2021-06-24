@@ -18,7 +18,8 @@ class SelfRegistering(object):
 
     class Unknown(Exception): pass
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        #ignore args.
         super().__init__()
 
     @classmethod
@@ -29,17 +30,23 @@ class SelfRegistering(object):
             for subclass in subclass.GetSubclasses():
                 yield subclass
 
-    def __new__(cls, name):
+    #TODO: How do we pass args to the subsequently called __init__()?
+    def __new__(cls, classname, *args, **kwargs):
         for subclass in cls.GetSubclasses():
-            # logging.info(f"New Datum {name} - looking at subclass {subclass.__name__}")
-            if subclass.__name__ == name:
+            # logging.info(f"New Datum {classname} - looking at subclass {subclass.__name__}")
+            if subclass.__name__ == classname:
+
                 # Using "object" base class method avoids recursion here.
                 child = object.__new__(subclass)
-                logging.debug(f"Created object of {child.__dict__}")
-                return child
-        # no subclass with matching name found (and no default defined)
-        raise SelfRegistering.Unknown(f'No known SelfRegistering class: {name}')
 
+                #__dict__ is always blank during __new__ and only populated by __init__.
+                #This is only useful as a negative control.
+                # logging.debug(f"Created object of {child.__dict__}")
+
+                return child
+        
+        # no subclass with matching classname found (and no default defined)
+        raise SelfRegistering.Unknown(f'No known SelfRegistering class: {classname}')
 
 def RegisterAllClassesInDirectory(directory):
     logging.debug(f"Loading SelfRegistering classes in {directory}")

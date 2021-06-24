@@ -12,14 +12,15 @@ from SimpleDatum import SimpleDatum
 
 def test_datum_creation_via_self_registering():
     logging.info("Creating SimpleDatum via self Registration")
+    # datum = SelfRegistering("SimpleDatum", name="R4ND0M N4M3") #TODO: How do?
     datum = SelfRegistering("SimpleDatum")
     logging.info(f"datum = {datum.__dict__}")
-    logging.info("Done")
+    # logging.info("Done")
     assert(datum is not None)
     
 def test_datum_creation_via_direct_init():
     logging.info("Creating SimpleDatum via direct initialization")
     datum = SimpleDatum("SimpleDatum")
     logging.info(f"datum = {datum.__dict__}")
-    logging.info("Done")
+    # logging.info("Done")
     assert(datum is not None)

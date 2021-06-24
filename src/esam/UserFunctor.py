@@ -26,20 +26,20 @@ class UserFunctor(ABC, Datum):
 #A FormatFunctor is used for reading or writing structured data to / from a file.
 class FormatUserFunctor(UserFunctor):
     def __init__(self, name=c.INVALID_NAME):
-        super(UserFunctor, self).__init__(name)
+        super().__init__(name)
 
 
 class InputFormatFunctor(FormatUserFunctor):
     def __init__(self, name=c.INVALID_NAME):
-        super(UserFunctor, self).__init__(name)
+        super().__init__(name)
 
 
 class OutputFormatFunctor(FormatUserFunctor):
     def __init__(self, name=c.INVALID_NAME):
-        super(UserFunctor, self).__init__(name)
+        super().__init__(name)
 
 
 #An AnalysisFunctor changes, adds to, or trims the data it's given in some way.
 class AnalysisFunctor(UserFunctor):
     def __init__(self, name=c.INVALID_NAME):
-        super(UserFunctor, self).__init__(name)
+        super().__init__(name)
