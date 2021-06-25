@@ -6,6 +6,10 @@ import Constants as c
 from DataContainer import DataContainer
 from UserFunctor import UserFunctor
 
+sys.path.append("functor")
+from InputSavedJSON import InputSavedJSON
+from OutputSavedJSON import OutputSavedJSON
+
 #SAM: a base class for all Sample analysis and managers.
 #A Sam is a functor and can be executed as such.
 #For example
@@ -35,6 +39,9 @@ class SAM(DataContainer, UserFunctor):
         self.analysisSteps = DataContainer("Analysis Steps")
         self.outputFormats = DataContainer("Output Formats")
 
+        self.loadFunctor = InputSavedJSON()
+        self.saveFunctor = OutputSavedJSON()
+
     #Global logging config.
     #Override this method to disable or change.
     def SetupLogging(self):
@@ -49,7 +56,7 @@ class SAM(DataContainer, UserFunctor):
         self.argparser.add_argument('-i', '--input-files', metavar = ('input1.xlsx','input2.xlsx'), type = str, help = 'Files to be analyzed.', dest = 'inputFiles', nargs = '*')
         self.argparser.add_argument('-if', '--input-format', type = str, help = 'Format of all input files', dest = 'inputFormat')
         self.argparser.add_argument('-s', '--save-file', metavar = 'saveTo.json', type = str, help = 'Save all data for easy access later.', dest = 'saveFile')
-        self.argparser.add_argument('-l', '--load-file', metavar = ('saved1.xlsx', 'saved2.xlsx'), type = str, help = 'Recall a previously analyzed data set.', dest = 'loadLocs', nargs = '*')
+        self.argparser.add_argument('-l', '--load-file', metavar = ('saved1.xlsx', 'saved2.xlsx'), type = str, help = 'Recall a previously analyzed data set.', dest = 'loadFiles', nargs = '*')
         self.argparser.add_argument('-o', '--output-file', metavar = 'output.xlsx', type = str, help = 'Result of analysis.', dest = 'outputFile')
         self.argparser.add_argument('-of', '--output-format', type = str, help = 'Report format to generate.', dest = 'outputFormat')
         self.argparser.add_argument('--only', metavar = ('sample1','sample2'), type = str, help = 'Only read in samples that match the given list', dest = 'only', nargs = '*')
@@ -72,7 +79,7 @@ class SAM(DataContainer, UserFunctor):
         if (self.args.verbose > 0): #TODO: different log levels with -vv, etc.?
             logging.getLogger().setLevel(logging.DEBUG)
 
-        if (not self.args.inputFiles and not self.args.loadLocs):
+        if (not self.args.inputFiles and not self.args.loadFiles):
             self.ExitDueToErr("You must specify at least one input file via -i or -l")
 
         if (self.args.inputFiles and not self.args.inputFormat):
@@ -114,8 +121,9 @@ class SAM(DataContainer, UserFunctor):
         inputFormat = self.GetFunctor(self.inputFormats, self.args.inputFormat)
         self.ImportDataFrom(configFormat(self.args.configFile))
         for i in self.args.inputFiles:
-            self.ImportDataFrom(inputFormat(i))
-        # for l in self.
+            self.ImportDataFrom(inputFormat(file=i))
+        for l in self.args.loadFiles:
+            self.ImportDataFrom(self.loadFunctor(file=l))
 
     #Removes any data specified with --only or --ignore
     def TrimData(self):
@@ -134,7 +142,7 @@ class SAM(DataContainer, UserFunctor):
     #   2. Write output files in output format.
     def GenerateOutput(self):
         if (self.args.saveFile):
-            pass
+            self.saveFunctor(file=self.args.saveFile, data=self.data)
         if (self.args.outputFile):
             outputFormat = self.GetFunctor(self.outputFormats, self.args.outputFormat)
-
+            outputFormat(file=self.args.outputFile, data=self.data)

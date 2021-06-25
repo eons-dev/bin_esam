@@ -16,7 +16,7 @@ import pkgutil
 
 class SelfRegistering(object):
 
-    class Unknown(Exception): pass
+    class ClassNotFound(Exception): pass
 
     def __init__(self, *args, **kwargs):
         #ignore args.
@@ -46,7 +46,7 @@ class SelfRegistering(object):
                 return child
         
         # no subclass with matching classname found (and no default defined)
-        raise SelfRegistering.Unknown(f'No known SelfRegistering class: {classname}')
+        raise SelfRegistering.ClassNotFound(f'No known SelfRegistering class: {classname}')
 
 def RegisterAllClassesInDirectory(directory):
     logging.debug(f"Loading SelfRegistering classes in {directory}")
