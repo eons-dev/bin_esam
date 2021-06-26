@@ -5,6 +5,7 @@ import logging
 import Constants as c
 from DataContainer import DataContainer
 from UserFunctor import UserFunctor
+from SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
 
 sys.path.append("functor")
 from InputSavedJSON import InputSavedJSON
@@ -29,18 +30,16 @@ class SAM(DataContainer, UserFunctor):
         self.args = None
         self.AddArgs()
 
-        #All of the following containers should be populated with FunctorBases.
-        #These will be called with a filename, in the case of inputs and outputs, or *this, in the case of analysis.
-        #NOTE: The name of the FunctorBases will be used to select a single instance from the relevant list, anytime there is only 1 format specified in the self.args.
-        #For example if we have input formats ['A', 'B', 'C'] and the user specifies -if C, only the UserFunctor of name 'C' will be called.
-        #See the methods below for additional details.
-        self.configFormats = DataContainer("Config Formats")
-        self.inputFormats = DataContainer("Input Formats")
-        self.analysisSteps = DataContainer("Analysis Steps")
-        self.outputFormats = DataContainer("Output Formats")
-
         self.loadFunctor = InputSavedJSON()
         self.saveFunctor = OutputSavedJSON()
+        
+        #All of the following directories should contain UserFunctors.
+        #These will be called with a filename, in the case of inputs and outputs, or self.data, in the case of analysis.
+        #See the methods below for additional details.
+        RegisterAllClassesInDirectory(os.path.join(os.getcwd(), "sam", "data"))
+        RegisterAllClassesInDirectory(os.path.join(os.getcwd(), "sam", "format", "input"))
+        RegisterAllClassesInDirectory(os.path.join(os.getcwd(), "sam", "format", "output"))
+        RegisterAllClassesInDirectory(os.path.join(os.getcwd(), "sam", "analysis"))
 
     #Global logging config.
     #Override this method to disable or change.
@@ -107,18 +106,18 @@ class SAM(DataContainer, UserFunctor):
         self.Analyze()
         self.GenerateOutput()
 
-    def GetFunctor(self, functorContainer, functorName):
-        functor = functorContainer.GetDatum(functorName) #FunctorBases are data
-        if (not functor.IsValid()):
-            self.ExitDueToErr(f"{functorName} not found in {functorContainer.name}")
+    def GetFunctor(self, functorName):
+        functor = SelfRegistering(functorName)
+        if (not functor.IsValid()): #UserFunctors are Data
+            self.ExitDueToErr(f"{functorName} not found.")
 
     #Order of operations:
     #   1. Read in config file
     #   2. Read in input files
     #   3. Load saved files (this is 3 to save work if any of the above formats are bad)
     def HandleInputs(self):
-        configFormat = self.GetFunctor(self.configFormats, self.args.configFormat)
-        inputFormat = self.GetFunctor(self.inputFormats, self.args.inputFormat)
+        configFormat = self.GetFunctor(self.args.configFormat)
+        inputFormat = self.GetFunctor(self.args.inputFormat)
         self.ImportDataFrom(configFormat(self.args.configFile))
         for i in self.args.inputFiles:
             self.ImportDataFrom(inputFormat(file=i))
@@ -144,5 +143,5 @@ class SAM(DataContainer, UserFunctor):
         if (self.args.saveFile):
             self.saveFunctor(file=self.args.saveFile, data=self.data)
         if (self.args.outputFile):
-            outputFormat = self.GetFunctor(self.outputFormats, self.args.outputFormat)
+            outputFormat = self.GetFunctor(self.args.outputFormat)
             outputFormat(file=self.args.outputFile, data=self.data)
