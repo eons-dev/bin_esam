@@ -43,7 +43,7 @@ def test_nonexistant_class_from_json():
         falseContainer = jsonpickle.decode(falseJson)
         falseContainerAsStr = f"{falseContainer.__dict__}"
         logging.info(f"false container: {falseContainerAsStr}")
-        assert(false) # just in case something was missed.
+        assert(False) # just in case something was missed.
 
 def test_alternative_class_from_json():
     altJson = '{"py/object": "SimpleContainer.SimpleContainer", "number": 0, "name": "SimpleContainer", "colorId": "", "uniqueID": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0, "data": [{"py/object": "SimpleDatum.SimpleDatum", "number": 0, "name": "INVALID_NAME", "colorId": "", "uniqueID": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0}]}'
