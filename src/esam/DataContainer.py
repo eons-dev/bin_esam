@@ -1,7 +1,7 @@
 import logging
 import operator
-import Constants as c
-from Datum import Datum
+from .Constants import *
+from .Datum import Datum
 
 #A DataContainer allows Data to be analyzed.
 #This class is intended to be derived from and added to.
@@ -10,7 +10,7 @@ from Datum import Datum
 #For details on each of these methods, please see the function definition below.
 #NOTE: DataContainers are, themselves Data. Thus, you can nest your child classes however you would like.
 class DataContainer(Datum):
-    def __init__(self, name=c.INVALID_NAME):
+    def __init__(self, name=INVALID_NAME):
         super().__init__(name)
         self.data = []
 

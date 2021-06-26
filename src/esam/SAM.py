@@ -1,15 +1,14 @@
-import os
-import sys
+import sys, os
 import argparse
 import logging
-import Constants as c
-from DataContainer import DataContainer
-from UserFunctor import UserFunctor
-from SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
+from .Constants import *
+from .DataContainer import DataContainer
+from .UserFunctor import UserFunctor
+from .SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
 
-sys.path.append("functor")
-from InputSavedJSON import InputSavedJSON
-from OutputSavedJSON import OutputSavedJSON
+#FIXME: how to do something like "from .functors.InputSavedJSON import InputSavedJSON" ???
+from .functors import InputSavedJSON
+from .functors import OutputSavedJSON
 
 #SAM: a base class for all Sample analysis and managers.
 #A Sam is a functor and can be executed as such.
@@ -23,15 +22,16 @@ from OutputSavedJSON import OutputSavedJSON
 #NOTE: Diamond inheritance of Datum.
 class SAM(DataContainer, UserFunctor):
 
-    def __init__(self, name=c.INVALID_NAME, descriptionStr="Sample Analysis and Manager. Not all arguments will apply to all workflows."):
+    def __init__(self, name=INVALID_NAME, descriptionStr="Sample Analysis and Manager. Not all arguments will apply to all workflows."):
         self.SetupLogging()
         super().__init__(name)
         self.argparser = argparse.ArgumentParser(description = descriptionStr)
         self.args = None
         self.AddArgs()
 
-        self.loadFunctor = InputSavedJSON()
-        self.saveFunctor = OutputSavedJSON()
+        #TODO: change with above import fix.
+        self.loadFunctor = InputSavedJSON.InputSavedJSON()
+        self.saveFunctor = OutputSavedJSON.OutputSavedJSON()
         
         #All of the following directories should contain UserFunctors.
         #These will be called with a filename, in the case of inputs and outputs, or self.data, in the case of analysis.
@@ -98,8 +98,7 @@ class SAM(DataContainer, UserFunctor):
             logging.warn("No standard specified, some analyses may fail")
 
     #UserFunctor required method
-    #Ignores data.
-    def UserFunction(self, data):
+    def UserFunction(self, **kwargs):
         self.ParseArgs()
         self.HandleInputs()
         self.TrimData()

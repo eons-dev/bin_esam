@@ -1,14 +1,9 @@
 import pytest
 import logging
-
 import sys, os
-
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "esam"))
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "esam", "functors"))
-
-from SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
-from InputSavedJSON import InputSavedJSON
-from OutputSavedJSON import OutputSavedJSON
+from esam.SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
+from esam.functors.InputSavedJSON import InputSavedJSON
+from esam.functors.OutputSavedJSON import OutputSavedJSON
 
 #This is not necessary because of TestDatumImport.
 #TODO: Can import statements be reset between tests?

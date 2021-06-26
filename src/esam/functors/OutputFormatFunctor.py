@@ -1,15 +1,11 @@
 import logging
 import sys, os
 from abc import abstractmethod
-sys.path.append("..")
-
-import Constants as c
-from IOFormatFunctor import IOFormatFunctor
-from DataContainer import DataContainer
-from Errors import *
+from ..Constants import *
+from .IOFormatFunctor import IOFormatFunctor
 
 class OutputFormatFunctor(IOFormatFunctor):
-    def __init__(self, name=c.INVALID_NAME):
+    def __init__(self, name=INVALID_NAME):
         super().__init__(name)
         
     #Output Functors will be given expected to write the contents of self.data to self.file.

@@ -1,11 +1,7 @@
 import pytest
 import logging
-
 import sys, os
-
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "esam"))
-
-from SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
+from esam.SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
 
 def test_datum_import():
     

@@ -1,13 +1,9 @@
 import pytest
 import logging
 import jsonpickle
-
 import sys, os
-
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src", "esam"))
-
-from SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
-from Serializable import Serializable
+from esam.SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
+from esam.Serializable import Serializable
 
 #This is not necessary because of TestDatumImport.
 #TODO: Can import statements be reset between tests?

@@ -1,14 +1,14 @@
 import logging
 from abc import ABC, abstractmethod
-import Constants as c
-from Datum import Datum
-from Errors import *
+from .Constants import *
+from .Datum import Datum
+from .Errors import *
 
 #UserFunctors are bare-bones functors that act as a base class for all SAM operations.
 #This class derives from Datum, primarily, to give it a name.
 class UserFunctor(ABC, Datum):
 
-    def __init__(self, name=c.INVALID_NAME):
+    def __init__(self, name=INVALID_NAME):
         super().__init__(name)
         self.requiredKWArgs = []
 

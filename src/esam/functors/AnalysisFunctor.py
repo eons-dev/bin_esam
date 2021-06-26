@@ -1,15 +1,11 @@
 import logging
 import sys, os
 from abc import abstractmethod
-sys.path.append("..")
-
-import Constants as c
-from DataFunctor import DataFunctor
-from DataContainer import DataContainer
-from Errors import *
+from ..Constants import *
+from .DataFunctor import DataFunctor
 
 class AnalysisFunctor(DataFunctor):
-    def __init__(self, name=c.INVALID_NAME):
+    def __init__(self, name=INVALID_NAME):
         super().__init__(name)
         
     #AnalysisFunctor will take self.data, mutate it, and then return it.

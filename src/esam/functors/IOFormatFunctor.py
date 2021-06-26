@@ -1,15 +1,12 @@
 import logging
 import sys, os
-sys.path.append("..")
-
-import Constants as c
-from DataFunctor import DataFunctor
-from DataContainer import DataContainer
+from ..Constants import *
+from .DataFunctor import DataFunctor
 
 #A IOFormatFunctor is used for reading or writing structured data to / from a file.
 #If you inherit from this, you must still override the abstract method UserFunction, from UserFunctor.
 class IOFormatFunctor(DataFunctor):
-    def __init__(self, name=c.INVALID_NAME):
+    def __init__(self, name=INVALID_NAME):
         super().__init__(name)
 
         self.requiredKWArgs.append("file")

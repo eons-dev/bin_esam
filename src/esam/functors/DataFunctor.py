@@ -1,14 +1,12 @@
 import logging
 import sys, os
-sys.path.append("..")
-
-import Constants as c
-from UserFunctor import UserFunctor
-from DataContainer import DataContainer
+from ..Constants import *
+from ..UserFunctor import UserFunctor
+from ..DataContainer import DataContainer
 
 #A DataFunctor is used for manipulating the contents of a DataContainer
 class DataFunctor(UserFunctor):
-    def __init__(self, name=c.INVALID_NAME):
+    def __init__(self, name=INVALID_NAME):
         super().__init__(name)
         
         self.requiredKWArgs.append("data")
