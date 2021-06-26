@@ -24,7 +24,7 @@ def test_save_then_load():
     saveFunctor(file="esam-test_save.json", data=container)
 
     loadFunctor = InputSavedJSON()
-    loadedContainer = loadFunctor(file="save.json")
+    loadedContainer = loadFunctor(file="esam-test_save.json")
 
     logging.info(f"container after loading: {loadedContainer.__dict__}")
 
