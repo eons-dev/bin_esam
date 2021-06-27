@@ -25,8 +25,8 @@ class SelfRegistering(object):
     #TODO: How do we pass args to the subsequently called __init__()?
     def __new__(cls, classname, *args, **kwargs):
         for subclass in cls.GetSubclasses():
-            # logging.info(f"New Datum {classname} - looking at subclass {subclass.__name__}")
             if subclass.__name__ == classname:
+                logging.debug(f"Creating new {subclass.__name__}")
 
                 # Using "object" base class method avoids recursion here.
                 child = object.__new__(subclass)

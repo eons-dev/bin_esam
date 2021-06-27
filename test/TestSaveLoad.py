@@ -24,3 +24,6 @@ def test_save_then_load():
     logging.info(f"container after loading: {loadedContainer.__dict__}")
 
     assert(loadedContainer.ToJSON() == container.ToJSON())
+
+    #This is necessary to run the tests more than once.
+    os.remove("esam-test_save.json")

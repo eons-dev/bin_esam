@@ -14,7 +14,7 @@ class Datum(SelfRegistering, Serializable):
         return object.__new__(cls)
 
     def __init__(self, name=INVALID_NAME, number=0):
-        logging.debug("init Datum")
+        # logging.debug("init Datum")
 
         self.number = number
         self.name = name

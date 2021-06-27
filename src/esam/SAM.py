@@ -29,6 +29,11 @@ class SAM(DataContainer, UserFunctor):
         self.args = None
         self.AddArgs()
 
+        #Data are separated into 2 categories. One for known data, the provided configuration, and the other for unknown data, those provided by input and loaded files.
+        #These are easily accessible via the GetConfigData() and GetSampleData() methods, below.
+        self.data.append(DataContainer(name="config"))
+        self.data.append(DataContainer(name="sample"))
+
         #TODO: change with above import fix.
         self.loadFunctor = InputSavedJSON.InputSavedJSON()
         self.saveFunctor = OutputSavedJSON.OutputSavedJSON()
@@ -60,6 +65,8 @@ class SAM(DataContainer, UserFunctor):
         self.argparser.add_argument('-of', '--output-format', type = str, help = 'Report format to generate.', dest = 'outputFormat')
         self.argparser.add_argument('--only', metavar = ('sample1','sample2'), type = str, help = 'Only read in samples that match the given list', dest = 'only', nargs = '*')
         self.argparser.add_argument('--ignore', metavar = ('sample1','sample2'), type = str, help = 'Read in all samples except those listed', dest = 'ignore', nargs = '*')
+        self.argparser.add_argument('--analyze-input-only', metavar = ('analysis_step-1','analysis_step-2'), type = str, help = 'Analyze input data only - not loaded data. Names of analysis functors to be run in order.', dest = 'inputOnlyAnalysisSteps', nargs = '*')
+        self.argparser.add_argument('-a', '--analyze', metavar = ('analysis_step-1','analysis_step-2'), type = str, help = 'Analyze all data, including previously saved data. Names of analysis functors to be run in order.', dest = 'analysisSteps', nargs = '*')
         self.argparser.add_argument('--verbose', '-v', action='count', default=1)
 
     #Something went wrong, let's quit.
@@ -82,11 +89,14 @@ class SAM(DataContainer, UserFunctor):
             self.ExitDueToErr("You must specify at least one input file via -i or -l")
 
         if (self.args.inputFiles and not self.args.inputFormat):
-            self.ExitDueToErr(f"Please specify the format of {self.args.inputFiles}")
+            self.ExitDueToErr(f"Please specify the format of the input files, {self.args.inputFiles}")
+
+        if (self.args.configFile and not self.args.configFormat):
+            self.ExitDueToErr(f"Please specify the format of the config file, {self.args.configFile}")
 
         #Not all workflows may require a config file.
         if (self.args.inputFiles and not self.args.configFile):
-            logging.warn("No config file specified for the given inputs")
+            logging.info("No config file specified for the given inputs")
 
         if (not self.args.outputFile and not self.args.saveFile):
             self.ExitDueToErr("You must specify at least one output file via -o or -s")
@@ -95,33 +105,61 @@ class SAM(DataContainer, UserFunctor):
             self.ExitDueToErr("Please specify either --only or --ignore, not both")
 
         if (not self.args.std):
-            logging.warn("No standard specified, some analyses may fail")
+            logging.info("No standard specified, some analyses may fail")
+
+    #TODO: can we make these faster?
+    #TODO: what happens if these ever don't return a pointer?
+    def GetConfigData(self):
+        return self.GetDatum("config")
+    def GetSampleData(self):
+        return self.GetDatum("sample")
 
     #UserFunctor required method
     def UserFunction(self, **kwargs):
         self.ParseArgs()
-        self.HandleInputs()
+        self.IngestConfig()
+        self.IngestInputs()
+        self.AnalyzeInputOnly()
+        self.LoadFiles()
         self.TrimData()
         self.Analyze()
         self.GenerateOutput()
 
     def GetFunctor(self, functorName):
         functor = SelfRegistering(functorName)
-        if (not functor.IsValid()): #UserFunctors are Data
+        if (not functor or not functor.IsValid()): #UserFunctors are Data
             self.ExitDueToErr(f"{functorName} not found.")
+        return functor
 
-    #Order of operations:
-    #   1. Read in config file
-    #   2. Read in input files
-    #   3. Load saved files (this is 3 to save work if any of the above formats are bad)
-    def HandleInputs(self):
+    def AnalyzeWith(self, functorName):
+        self.data = self.GetFunctor(functorName)(data=self.GetSampleData(), config=self.GetConfigData(), standard=self.args.std)
+
+    def IngestConfig(self):
+        #we check for configFormat when validating input and GetFunctor will fail if it does not exist.
+        if (not self.args.configFile):
+            return
         configFormat = self.GetFunctor(self.args.configFormat)
+        self.GetConfigData().ImportDataFrom(configFormat(file=self.args.configFile))
+        
+    def IngestInputs(self):
+        if (not self.args.inputFiles):
+            return
         inputFormat = self.GetFunctor(self.args.inputFormat)
-        self.ImportDataFrom(configFormat(self.args.configFile))
         for i in self.args.inputFiles:
-            self.ImportDataFrom(inputFormat(file=i))
+            self.GetSampleData().ImportDataFrom(inputFormat(file=i))
+
+    #Analysis to be run before we load saved data.
+    def AnalyzeInputOnly(self):
+        if (not self.args.inputOnlyAnalysisSteps):
+            return
+        for step in self.args.inputOnlyAnalysisSteps:
+            self.AnalyzeWith(step)
+
+    def LoadFiles(self):
+        if (not self.args.loadFiles):
+            return
         for l in self.args.loadFiles:
-            self.ImportDataFrom(self.loadFunctor(file=l))
+            self.GetSampleData().ImportDataFrom(self.loadFunctor(file=l))
 
     #Removes any data specified with --only or --ignore
     def TrimData(self):
@@ -130,17 +168,19 @@ class SAM(DataContainer, UserFunctor):
         elif (self.args.ignore):
             self.RemoveData(self.args.ignore)
 
-    #Runs all analysis steps in the order they were added to *this.
+    #Runs analysis steps on all data in the order they were provided.
     def Analyze(self):
-        for step in self.analysisSteps:
-            self.data = step(self.data)
+        if (not self.args.analysisSteps):
+            return
+        for step in self.args.analysisSteps:
+            self.AnalyzeWith(step)
 
     #Order of operations:
     #   1. Save existing data, if desired (this is usually safe, so do it early)
     #   2. Write output files in output format.
     def GenerateOutput(self):
         if (self.args.saveFile):
-            self.saveFunctor(file=self.args.saveFile, data=self.data)
+            self.saveFunctor(file=self.args.saveFile, data=self.GetSampleData())
         if (self.args.outputFile):
             outputFormat = self.GetFunctor(self.args.outputFormat)
-            outputFormat(file=self.args.outputFile, data=self.data)
+            outputFormat(file=self.args.outputFile, data=self.GetSampleData())

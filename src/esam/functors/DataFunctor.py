@@ -19,3 +19,5 @@ class DataFunctor(UserFunctor):
     #Override of UserFunctor method.
     def PreCall(self, **kwargs):
         self.Clear()
+        self.data = kwargs.get("data")
+        

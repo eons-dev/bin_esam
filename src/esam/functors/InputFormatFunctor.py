@@ -22,3 +22,7 @@ class InputFormatFunctor(IOFormatFunctor):
         self.file = open(kwargs.get("file"), "r")
         self.ParseInput() #populate self.data
         return self.data
+
+    #Override DataFunctor to ensure we don't try to read the unneeded data kwarg.
+    def PreCall(self, **kwargs):
+        self.Clear()

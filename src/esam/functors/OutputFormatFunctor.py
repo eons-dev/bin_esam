@@ -18,7 +18,6 @@ class OutputFormatFunctor(IOFormatFunctor):
 
     def UserFunction(self, **kwargs):
         self.file = open(kwargs.get("file"), "w")
-        self.data = kwargs.get("data")
         self.WriteFile()
         
         #the point of no return.
