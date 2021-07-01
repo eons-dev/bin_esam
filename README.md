@@ -13,7 +13,7 @@ Design in short: Self-registering functors with reflection to and from json for 
 
 To use esam (or your own custom variant), you must first invent the universe.
 Once that's done and you've installed the program on your computer, you'll need to create a workspace.
-A workspace is any folder you'd like to store your data in which also contains a `sam` folder.
+A workspace is any folder you'd like to store your data in, which also contains a `sam` folder.
 In the `sam` folder should be the following sub-folders:
 * analysis
 * data
@@ -30,7 +30,7 @@ NOTE: it is not necessary to do anything besides place your files in these direc
 ### Functors
 
 Functors are classes (objects) that have an invokable `()` operator, which allows you to treat them like functions.
-esam uses functors to provide input, analysis, and output functionality, which is made simple by classical inheritance.
+esam uses functors to provide input, analysis, and output functionalities, which are made simple by classical inheritance.
 
 The primary ways functors are used are:
 1. To digest input and store the contents of a file as workable data structures.
@@ -39,7 +39,7 @@ The primary ways functors are used are:
 
 Functors are also used to provide save and load functionality, which is different from inputs and outputs.
 
-For extensibility, all functors take a \*\*kwargs argument. This allows you to provide arbitrary key word arguments (e.g. key="value") to your objects.
+For extensibility, all functors take a `**kwargs` argument. This allows you to provide arbitrary key word arguments (e.g. key="value") to your objects.
 
 ### Self Registration
 
@@ -50,7 +50,7 @@ Normally, one has to `import` the files they create into their "main" file in or
 For example, in some `MyDatum.py` in a `MyData` directory, you might have:
 ```
 import logging
-from esam import Datum
+from esam.Datum import Datum
 class MyDatum(Datum): #Datum is a useful child of SelfRegistering
     def __init__(self, name="only relevant during direct instantiation"):
         logging.info(f"init MyDatum")
@@ -59,7 +59,7 @@ class MyDatum(Datum): #Datum is a useful child of SelfRegistering
 From our main.py, we can then call:
 ```
 import sys, os
-from esam import RegisterAllClassesInDirectory
+from esam.SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
 RegisterAllClassesInDirectory(os.path.join(os.path.dirname(os.path.abspath(__file__)), "MyData"))
 ```
 Here, we use `os.path` to make the file path relevant to the project folder and not the current working directory.
@@ -72,10 +72,10 @@ and we will get a `MyDatum` object, fully instantiated.
 ### Saving and Loading
 
 In addition to having self-registering functors, the last primary feature of esam is reflection between python and json.
-As long as your `Data` and `Functors` (the classes you derive from `esam.Datum` and `esam.UserFunctor` or their children), have been registered through `RegisterAllClassesInDirectory()`, you'll be able to save, load, and thus, work with your data through json.
+As long as your `Data` and `Functors` (the classes you derive from `esam.Datum.Datum` and `esam.UserFunctor.UserFunctor` or their children), have been registered through `RegisterAllClassesInDirectory()`, you'll be able to save, load, and thus, work with your data through json.
 
 Saving files thus allows you to retain everything from your original data, no matter how complex the initial analysis was.
-Consider if you would like to design an analysis pipeline to share with your colleagues. All you have to do is create the functors and have your colleagues place them in their respective folders (no code change necessary on their part, since the new files will be automatically picked up). You can then pass your data as json between each other, potentially creating your own analysis steps, report outputs, etc., all which could be shared later or kept as personalized as you'd like.
+Consider if you would like to design an analysis pipeline to share with your colleagues. All you have to do is create the functors and have your colleagues place them in their respective folders (no code change necessary on their part, since the new files will be automatically picked up). You can then pass your data as json between each other, potentially creating your own analysis steps, report outputs, etc., all of which could be shared later or kept as personalized as you'd like.
 
 Saving and loading is handled by esam, rather than the downstream application. 
 Saved files will always be .json, unless you fork this repository and change the SAM base class.
