@@ -24,7 +24,7 @@ class Datum(SelfRegistering, Serializable):
         #This should be a time-based value, etc.
         #For example, if you measure some chemical species that elutes off a column at a given rate, it won't matter how much eluate is present between different runs of the experiment, the time taken to observe the substance uniquely identifies that species.
         #Unique, time-based ids are especially valuable when there are multiple candidates vying for the same name (per names based on known time-based values). This underlies the bestMatch system, below.
-        self.uniqueID = 0
+        self.uniqueId = 0
 
         #Storing validity as a member makes it easy to generate bad return values (i.e. instead of checking for None) as well as manipulate data (e.g. each analysis step invalidates some data and all invalid data are discarded at the end of analysis).
         self.valid = True 

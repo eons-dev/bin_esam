@@ -21,7 +21,7 @@ class DataContainer(Datum):
         return ret
 
     #If your Data use a time-based unique id, then sorting by id will sort the Data in *this into chronological order.
-    def SortData(self, by='uniqueID'):
+    def SortData(self, by='uniqueId'):
         self.data.sort(key=operator.attrgetter(by))
 
     #Adds a Datum to *this
@@ -112,16 +112,16 @@ class DataContainer(Datum):
         for d1 in self.data:
             skip = False
             for dp in alreadyProcessed:
-                if (d1.uniqueID == dp):
+                if (d1.uniqueId == dp):
                     skip = True
                     break
             if (skip):
                 continue
             for d2 in self.data:
-                if (d1 is not d2 and d1.uniqueID == d2.uniqueID):
-                    logging.info(f"Removing duplicate Datum {d2} with unique id {d2.uniqueID}")
+                if (d1 is not d2 and d1.uniqueId == d2.uniqueId):
+                    logging.info(f"Removing duplicate Datum {d2} with unique id {d2.uniqueId}")
                     toRem.append(d2)
-                    alreadyProcessed.append(d1.uniqueID)
+                    alreadyProcessed.append(d1.uniqueId)
         return self.RemoveData(toRem)
 
     #RETURNS: the sum of datumAttribute for all data
@@ -165,7 +165,7 @@ class DataContainer(Datum):
         for i in range(len(self.data)):
             if (i == len(self.data)-1):
                 break #we look at i and i+1, so break before last i
-            dUI = abs(self.data[i].uniqueID - self.data[i+1].uniqueID)
+            dUI = abs(self.data[i].uniqueId - self.data[i+1].uniqueId)
             if (dUI < gap):
                 gap = dUI
         return gap
@@ -178,12 +178,12 @@ class DataContainer(Datum):
             self.SortData()
 
         #check corner cases first
-        if (startingId >= self.data[-1].uniqueID): #startingId is too high.
+        if (startingId >= self.data[-1].uniqueId): #startingId is too high.
             return self.InvalidDatum()
 
         try:
             for i in range(len(self.data)):
-                if (self.data[i].uniqueID < startingId):
+                if (self.data[i].uniqueId < startingId):
                     continue
                 if (not self.data[i].IsValid()):
                     continue
@@ -209,11 +209,11 @@ class DataContainer(Datum):
         if (shouldSort):
             self.SortData()
 
-        startingId = self.data[0].uniqueID
+        startingId = self.data[0].uniqueId
         ret = DataContainer()
         while (True):
             tempData = self.GetNextLocalExtremity(startingId, datumAttribute, relation, False)
-            startingId = tempData.uniqueID
+            startingId = tempData.uniqueId
             if (tempData.IsValid()):
                 ret.AddDatum(tempData)
             else:

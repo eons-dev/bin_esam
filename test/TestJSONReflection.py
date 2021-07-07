@@ -34,7 +34,7 @@ def test_container_json():
 
 def test_nonexistant_class_from_json():
     with pytest.raises(Exception):
-        falseJson = '{"py/object": "NONEXISTANT.NONEXISTANT", "number": 0, "name": "SimpleContainer", "colorId": "", "uniqueID": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0, "data": [{"py/object": "DoesStuffDatum.DoesStuffDatum", "number": 0, "name": "INVALID_NAME", "colorId": "", "uniqueID": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0, "extraVariable": "some string"}]}'
+        falseJson = '{"py/object": "NONEXISTANT.NONEXISTANT", "number": 0, "name": "SimpleContainer", "colorId": "", "uniqueId": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0, "data": [{"py/object": "DoesStuffDatum.DoesStuffDatum", "number": 0, "name": "INVALID_NAME", "colorId": "", "uniqueId": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0, "extraVariable": "some string"}]}'
 
         falseContainer = jsonpickle.decode(falseJson)
         falseContainerAsStr = f"{falseContainer.__dict__}"
@@ -42,7 +42,7 @@ def test_nonexistant_class_from_json():
         assert(False) # just in case something was missed.
 
 def test_alternative_class_from_json():
-    altJson = '{"py/object": "SimpleContainer.SimpleContainer", "number": 0, "name": "SimpleContainer", "colorId": "", "uniqueID": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0, "data": [{"py/object": "SimpleDatum.SimpleDatum", "number": 0, "name": "INVALID_NAME", "colorId": "", "uniqueID": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0}]}'
+    altJson = '{"py/object": "SimpleContainer.SimpleContainer", "number": 0, "name": "SimpleContainer", "colorId": "", "uniqueId": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0, "data": [{"py/object": "SimpleDatum.SimpleDatum", "number": 0, "name": "INVALID_NAME", "colorId": "", "uniqueId": 0, "valid": true, "bestMatch": true, "nameMatchDiscrepancy": 0}]}'
 
     altContainer = jsonpickle.decode(altJson)
     altContainerAsStr = f"{altContainer.__dict__}"

@@ -24,16 +24,24 @@ class SAM(DataContainer, UserFunctor):
 
     def __init__(self, name=INVALID_NAME, descriptionStr="Sample Analysis and Manager. Not all arguments will apply to all workflows."):
         self.SetupLogging()
+        
         super().__init__(name)
+        
         self.argparser = argparse.ArgumentParser(description = descriptionStr)
         self.args = None
         self.AddArgs()
 
+        self.InitData()
+        self.InitSaveLoad()
+        self.RegisterAllClasses()
+        
         #Data are separated into 2 categories. One for known data, the provided configuration, and the other for unknown data, those provided by input and loaded files.
         #These are easily accessible via the GetConfigData() and GetSampleData() methods, below.
+    def InitData(self):
         self.data.append(DataContainer(name="config"))
         self.data.append(DataContainer(name="sample"))
 
+    def InitSaveLoad(self):
         #TODO: change with above import fix.
         self.loadFunctor = InputSavedJSON.InputSavedJSON()
         self.saveFunctor = OutputSavedJSON.OutputSavedJSON()
@@ -41,6 +49,7 @@ class SAM(DataContainer, UserFunctor):
         #All of the following directories should contain UserFunctors.
         #These will be called with a filename, in the case of inputs and outputs, or self.data, in the case of analysis.
         #See the methods below for additional details.
+    def RegisterAllClasses(self):
         RegisterAllClassesInDirectory(os.path.join(os.getcwd(), "sam", "data"))
         RegisterAllClassesInDirectory(os.path.join(os.getcwd(), "sam", "format", "input"))
         RegisterAllClassesInDirectory(os.path.join(os.getcwd(), "sam", "format", "output"))
@@ -54,7 +63,7 @@ class SAM(DataContainer, UserFunctor):
     #Adds command line arguments.
     #Override this method to change. Optionally, call super().AddArgs() within your method to simply add to this list.
     def AddArgs(self):
-        self.argparser.add_argument('-c','--config-file', type = str, metavar = 'config.xlsx',help = 'File containing configuration data, standards, and known values.', dest = 'configFile')
+        self.argparser.add_argument('-c','--config-file', type = str, metavar = 'config.xlsx', help = 'File containing configuration data, standards, and known values.', dest = 'configFile')
         self.argparser.add_argument('-cf', '--config-format', type = str, help = 'Format the config file', dest = 'configFormat')
         self.argparser.add_argument('--standard', metavar = 'standardName', type = str, help = 'Name of the standard used', dest = 'std')
         self.argparser.add_argument('-i', '--input-files', metavar = ('input1.xlsx','input2.xlsx'), type = str, help = 'Files to be analyzed.', dest = 'inputFiles', nargs = '*')

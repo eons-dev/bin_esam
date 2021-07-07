@@ -10,7 +10,7 @@ class MSSpecies(Datum):
         #Absolute time at measurement
         self.recordDate = None
 
-        #recordDate as timestamp = self.uniqueID
+        #recordDate as timestamp = self.uniqueId
 
         self.runtime = 0
         self.analog = 0

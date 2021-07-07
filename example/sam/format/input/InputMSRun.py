@@ -23,7 +23,7 @@ class InputMSRun(InputFormatFunctor):
             lineDatum.runtime = float(lineAsList[0])
             lineDatum.number = int(lineAsList[1])
             lineDatum.recordDate = runDate + datetime.timedelta(0, lineDatum.runtime)
-            lineDatum.uniqueID = lineDatum.recordDate.timestamp()
+            lineDatum.uniqueId = lineDatum.recordDate.timestamp()
             lineDatum.analog = float(lineAsList[2])
             lineDatum.digital = int(lineAsList[3])
             lineDatum.scanTime = float(lineAsList[4])

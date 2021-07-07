@@ -18,4 +18,5 @@ class IOFormatFunctor(DataFunctor):
 
     #Override of UserFunctor method.
     def PostCall(self, **kwargs):
-        self.file.close()
+        if (not self.file.closed):
+            self.file.close()
