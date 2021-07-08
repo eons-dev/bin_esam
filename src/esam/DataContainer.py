@@ -105,23 +105,24 @@ class DataContainer(Datum):
     #Adds all Data from otherDataContainer to *this.
     #If there are duplicate Data they are removed here.
     #RETURNS: the Data removed
-    def ImportDataFrom(self, otherDataContainer):
+    def ImportDataFrom(self, otherDataContainer, removeDuplicates=False):
         self.data.extend(otherDataContainer.data);
         toRem = [] #list of Data
-        alreadyProcessed = [] #list of unique ids.
-        for d1 in self.data:
-            skip = False
-            for dp in alreadyProcessed:
-                if (d1.uniqueId == dp):
-                    skip = True
-                    break
-            if (skip):
-                continue
-            for d2 in self.data:
-                if (d1 is not d2 and d1.uniqueId == d2.uniqueId):
-                    logging.info(f"Removing duplicate Datum {d2} with unique id {d2.uniqueId}")
-                    toRem.append(d2)
-                    alreadyProcessed.append(d1.uniqueId)
+        if (removeDuplicates):
+            alreadyProcessed = [] #list of unique ids.
+            for d1 in self.data:
+                skip = False
+                for dp in alreadyProcessed:
+                    if (d1.uniqueId == dp):
+                        skip = True
+                        break
+                if (skip):
+                    continue
+                for d2 in self.data:
+                    if (d1 is not d2 and d1.uniqueId == d2.uniqueId):
+                        logging.info(f"Removing duplicate Datum {d2} with unique id {d2.uniqueId}")
+                        toRem.append(d2)
+                        alreadyProcessed.append(d1.uniqueId)
         return self.RemoveData(toRem)
 
     #RETURNS: the sum of datumAttribute for all data

@@ -18,7 +18,6 @@ class Datum(SelfRegistering, Serializable):
 
         self.number = number
         self.name = name
-        self.colorId = "" #a unique color to help identify trends
 
         #A unique id states that any 2 Data with the same id are, in fact, the same, regardless of what else might vary.
         #This should be a time-based value, etc.
