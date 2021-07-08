@@ -1,6 +1,6 @@
 # eons Sample Analysis and Manager
 
-![build](https://github.com/eons-dev/esam/workflows/python-package.yml/badge.svg)
+![build](https://github.com/eons-dev/esam/actions/workflows/python-package.yml/badge.svg)
 
 Generalized framework for scientific data analysis.
 
