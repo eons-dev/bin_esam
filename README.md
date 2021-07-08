@@ -1,5 +1,7 @@
 # eons Sample Analysis and Manager
 
+![build](https://github.com/eons-dev/esam/workflows/python-package.yml/badge.svg)
+
 Generalized framework for scientific data analysis.
 
 Design in short: Self-registering functors with reflection to and from json for use with arbitrary data structures.
