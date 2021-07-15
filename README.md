@@ -30,6 +30,23 @@ These folders will then be populated by your own data structures (`Datum`), pars
 
 NOTE: it is not necessary to do anything besides place your files in these directories to use them. See below for more info on design (and technically, it doesn't matter which folder what file is in but the organization will help keep things consistent when publishing or sharing your work)
 
+## Example
+
+Let's break down this command: `esam -v -i *.txt -if in_ms -f mass --ignore 86 -s saved_ms-data.json -o out_ms-data_1.xlsx -of out_excel`
+
+The start is straightforward. `esam -v` runs this program in verbose mode, which will print debug messages.  
+The next part might be a bit arcane. This is intended to be run on a unix system where `*` will be expanded to all matches. So, in this case, `-i *.txt` will take all files in the current directory that end in ".txt". That trick will be invaluable when working with datasets containing lots of raw files.  
+Continuing with the inputs, we have `-if in_ms`. This is the esam magic. What we are doing is telling esam that all of our .txt files are in a format which can be parsed by the "in_ms" object, which is located in the `format/inputs` folder and self-registers with our program when you run the command. Thus, this translates to "the input format for my input files is the in_ms format class". When working with your own data, you might want to take a look at in_ms and write your own version.  
+Next we use `-f mass --ignore 86` to filter our data, by removing all entries with a mass of 86. Similar to how `-if` is used to find the right class to parse our inputs, `-f` must be used to find the right field in our data to filter by. Specifying `-f` is necessary if you want to use `--only` or `--ignore`. Filtered data will not be saved or output. If you wish to consolidate inputs into a single dataset then filter, run esam twice: once to generate a saved file with all data and again to load that saved file, filter, and generate another saved file with the data you want. You can also do this with analysis steps so that you don't lose progress along the way.  
+You might have guessed what we do next. We save the file! Using `-s saved_ms-data.json` generates a reusable json output. If you wanted to add data to this saved file, you could run this same command on different \*.txt files and add `-l saved_ms-data.json`, to load the previously saved data and then add to it.  
+Lastly, we generate our desired output with `-o out_ms-data_1.xlsx -of out_excel`. This is exactly analogous to input parsing, except instead of reading in a file and populating data structures from the contents, we take data structures and write their fields in a way that shows us usable information.
+
+Hopefully, that's enough to get you started. If you need more help, start with `esam --help` and if you're still having trouble, reach out to us at support@eons.dev. We'll try our best to get back to you quickly :)
+
+NOTE: out_excel requires that you `pip install pandas openpyxl` and name your output file " SOMETHING **.xlsx** " (no spaces)
+
+If you're curious, all the files names here follow the [eons naming scheme](https://eons.dev/convention/naming/)
+
 ## Design
 
 ### Saving and Loading
