@@ -2,6 +2,7 @@ import logging
 import operator
 import eons
 from .Serializable import Serializable
+from .Datum import Datum
 
 #SampleSets extend eons.DataContainers by adding extra logic for use with esam.Data. In particular are means of comparing unknown Data to known Data and operations involving uniqueIds.
 class SampleSet(eons.DataContainer, Serializable):
@@ -94,7 +95,7 @@ class SampleSet(eons.DataContainer, Serializable):
             self.SortData()
 
         startingId = self.data[0].uniqueId
-        ret = DataContainer()
+        ret = SampleSet()
         while (True):
             tempData = self.GetNextLocalExtremity(startingId, datumAttribute, relation, False)
             startingId = tempData.uniqueId
@@ -111,7 +112,7 @@ class SampleSet(eons.DataContainer, Serializable):
     #   3. the stdName provided matches a Datum within *this
     #   4. stdAttribute and selfAttribute are defined and are valid numbers in *this
     #EXAMPLE:
-    #   *this, a DataContainer, contains data from a gas chromatograph, which includes a known standard, with name given by stdNames. Each Datum in *this, an individual fatty acid methyl ester, would be an instance of a FAME class, which would be a child of Datum containing a peak area. Thus, the datumAttribute would be something like "peakArea", the member variable of our FAME class. By comparing peak areas, the known mass of the standard can be used to calculate the known mass of each other Datum in *this. Thus, stdAttribute would be something like "mgStd", meaning self.mgStd would return a valid number for *this. We then calculate the attributeFraction by comparing the stdAttribute with the corresponding selfAttribute, in this case the mass of our sample, something like "mgDryWeight". The resulting value is stored in the FAME instance for each Datum, perhaps as a member by name of "percentFA".
+    #   *this, a SampleSet, contains data from a gas chromatograph, which includes a known standard, with name given by stdNames. Each Datum in *this, an individual fatty acid methyl ester, would be an instance of a FAME class, which would be a child of Datum containing a peak area. Thus, the datumAttribute would be something like "peakArea", the member variable of our FAME class. By comparing peak areas, the known mass of the standard can be used to calculate the known mass of each other Datum in *this. Thus, stdAttribute would be something like "mgStd", meaning self.mgStd would return a valid number for *this. We then calculate the attributeFraction by comparing the stdAttribute with the corresponding selfAttribute, in this case the mass of our sample, something like "mgDryWeight". The resulting value is stored in the FAME instance for each Datum, perhaps as a member by name of "percentFA".
     #   This gives us a way to translate raw data into real-world, relevant information, which can be compared between samples.
     #   To recap, we use:
     #       stdName = the name of our standard (eons.g. "C:17")
@@ -123,7 +124,7 @@ class SampleSet(eons.DataContainer, Serializable):
     #       A mg / mg ratio of each fatty acid species to dry weight of samples.
     #   This is given by:
     #       {datum.peak area} / {std.peak area} * {std.mass} / {samples.mass}
-    #NOTE: The reason stdAttribute is a member of a DataContainer child and not a Datum child is that calculating the stdAttribute for all Data is almost always meaningless until those values are normalized to how much of each Datum was used in the experiment. Thus, instead of eating up more RAM and CPU time sorting through extra values that won't be used, stdAttribute is only stored once, within *this.
+    #NOTE: The reason stdAttribute is a member of a SampleSet child and not a Datum child is that calculating the stdAttribute for all Data is almost always meaningless until those values are normalized to how much of each Datum was used in the experiment. Thus, instead of eating up more RAM and CPU time sorting through extra values that won't be used, stdAttribute is only stored once, within *this.
     def CalculateAttributePercent(self, stdName, datumAttribute, datumAttributeToSet, stdAttribute, selfAttribute):
         std = self.GetDatum(stdName)
         if (not std.IsValid()):

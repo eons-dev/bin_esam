@@ -3,6 +3,7 @@ import sys, os
 from abc import abstractmethod
 import eons
 from .DataFunctor import DataFunctor
+from ..SampleSet import SampleSet
 
 #AnalysisFunctors are used in data manipulation.
 #They take a configuration of known values (config) in addition to sample data, which is contains unknown and/or values of interest.
@@ -27,7 +28,7 @@ class AnalysisFunctor(DataFunctor):
 
     def Clear(self):
         super().Clear()
-        self.config = DataContainer()
+        self.config = SampleSet()
         self.standard = ""
     
     #Override of UserFunctor method.

@@ -44,10 +44,10 @@ class Datum(eons.Datum, Serializable):
             compareValue = getattr(compare, attribute)
             if(self.nameMatchDiscrepancy != 0):
                 selfValue /= abs(self.nameMatchDiscrepancy)
-            if(compares.nameMatchDiscrepancy != 0):
-                compareValue /= abs(compares.nameMatchDiscrepancy)
+            if(compare.nameMatchDiscrepancy != 0):
+                compareValue /= abs(compare.nameMatchDiscrepancy)
         except Exception as e:
-            logging.error(f"Error comparing {self.name} and {compares.name}: {e.message}")
+            logging.error(f"Error comparing {self.name} and {compare.name}: {e.message}")
             return False;
 
         return selfValue > compareValue
