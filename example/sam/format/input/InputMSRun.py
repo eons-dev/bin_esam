@@ -1,12 +1,10 @@
 import logging
 import sys, os
 import datetime
-from esam import Constants as c
-from esam.functors.InputFormatFunctor import InputFormatFunctor
-from esam.SelfRegistering import SelfRegistering
+import eons, esam
 
-class InputMSRun(InputFormatFunctor):
-    def __init__(self, name=c.INVALID_NAME):
+class InputMSRun(esam.InputFormatFunctor):
+    def __init__(self, name=eons.INVALID_NAME):
         super().__init__(name)
 
     def ParseInput(self):
@@ -19,7 +17,7 @@ class InputMSRun(InputFormatFunctor):
             logging.debug(f"Reading: {line}")
             lineAsList = line.split('\t')
 
-            lineDatum = SelfRegistering("MSSpecies")
+            lineDatum = eons.SelfRegistering("MSSpecies")
             lineDatum.runtime = float(lineAsList[0])
             lineDatum.number = int(lineAsList[1])
             lineDatum.recordDate = runDate + datetime.timedelta(0, lineDatum.runtime)

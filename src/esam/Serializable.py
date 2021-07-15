@@ -11,4 +11,4 @@ class Serializable(json.JSONEncoder):
     #Problem: How do you know what object to call FromJSON on if the class is defined in the json, which has not yet been read?
     # def FromJSON(self, json):
     #     #TODO: can we make this safer?
-    #     self = jsonpickle.decode(jsonEncoding)
+    #     self = jsonpickles.decode(jsonEncoding)

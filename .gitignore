@@ -130,3 +130,6 @@ dmypy.json
 
 # Test files
 *esam-test*
+
+# EBBS build folder
+generated/

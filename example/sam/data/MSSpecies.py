@@ -1,8 +1,7 @@
-from esam import Constants as c
-from esam.Datum import Datum
+import eons, esam
 
-class MSSpecies(Datum):
-    def __init__(self, name=c.INVALID_NAME):
+class MSSpecies(esam.Datum):
+    def __init__(self, name=eons.INVALID_NAME):
         super().__init__()
 
         #Mass reading = self.number

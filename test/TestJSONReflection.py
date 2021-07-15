@@ -2,20 +2,18 @@ import pytest
 import logging
 import jsonpickle
 import sys, os
-from esam.SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
-from esam.Serializable import Serializable
+import eons, esam
 
 #This is not necessary because of TestDatumImport.
 #TODO: Can import statements be reset between tests?
 # RegisterAllClassesInDirectory(os.path.join(os.path.dirname(os.path.abspath(__file__)),"data"))
 
-
 def test_container_json():
     jsonEncoding = ""
     
     #to json
-    container = SelfRegistering("SimpleContainer")
-    container.AddDatum(SelfRegistering("DoesStuffDatum"))
+    container = eons.SelfRegistering("SimpleContainer")
+    container.AddDatum(eons.SelfRegistering("DoesStuffDatum"))
     
     containerAsStr = f"{container.__dict__}"
     logging.info(f"container before encoding: {container}")

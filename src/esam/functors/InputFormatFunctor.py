@@ -1,11 +1,11 @@
 import logging
 import sys, os
 from abc import abstractmethod
-from ..Constants import *
+import eons
 from .IOFormatFunctor import IOFormatFunctor
 
 class InputFormatFunctor(IOFormatFunctor):
-    def __init__(self, name=INVALID_NAME):
+    def __init__(self, name=eons.INVALID_NAME()):
         super().__init__(name)
         
         #self.data will be returned, so we shouldn't be asking for it.

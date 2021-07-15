@@ -1,9 +1,8 @@
 import sys, os, logging
-from esam import Constants as c
-from esam.Datum import Datum
+import eons, esam
 
-class DoesStuffDatum(Datum):
-    def __init__(self, name=c.INVALID_NAME):
+class DoesStuffDatum(esam.Datum):
+    def __init__(self, name=eons.INVALID_NAME):
         logging.info(f"init DoesStuffDatum")
         super().__init__()
 

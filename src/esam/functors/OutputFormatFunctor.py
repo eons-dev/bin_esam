@@ -1,11 +1,11 @@
 import logging
 import sys, os
 from abc import abstractmethod
-from ..Constants import *
+import eons
 from .IOFormatFunctor import IOFormatFunctor
 
 class OutputFormatFunctor(IOFormatFunctor):
-    def __init__(self, name=INVALID_NAME):
+    def __init__(self, name=eons.INVALID_NAME()):
         super().__init__(name)
         
     #Output Functors will be given expected to write the contents of self.data to self.file.

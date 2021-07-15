@@ -1,17 +1,17 @@
 import pytest
 import logging
 import sys, os
-from esam.SelfRegistering import SelfRegistering, RegisterAllClassesInDirectory
+import eons, esam
 
 def test_datum_import():
     
     #Before importing data, instantiating a child should fail.
     with pytest.raises(Exception):
-        SelfRegistering("DoesStuffDatum")
+        eons.SelfRegistering("DoesStuffDatum")
         assert(False) # just in case something was missed.
 
     #Load up our child classes.
-    RegisterAllClassesInDirectory(os.path.join(os.path.dirname(os.path.abspath(__file__)),"data"))
+    eons.SelfRegistering.RegisterAllClassesInDirectory(os.path.join(os.path.dirname(os.path.abspath(__file__)),"data"))
 
-    assert(SelfRegistering("DoesStuffDatum") is not None)
+    assert(eons.SelfRegistering("DoesStuffDatum") is not None)
 

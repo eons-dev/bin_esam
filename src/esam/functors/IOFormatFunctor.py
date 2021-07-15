@@ -1,12 +1,12 @@
 import logging
 import sys, os
-from ..Constants import *
+import eons
 from .DataFunctor import DataFunctor
 
-#A IOFormatFunctor is used for reading or writing structured data to / from a file.
+#A IOFormatFunctor is used for reading or writing structured data to / from a files.
 #If you inherit from this, you must still override the abstract method UserFunction, from UserFunctor.
 class IOFormatFunctor(DataFunctor):
-    def __init__(self, name=INVALID_NAME):
+    def __init__(self, name=eons.INVALID_NAME()):
         super().__init__(name)
 
         self.requiredKWArgs.append("file")

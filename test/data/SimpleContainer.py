@@ -1,8 +1,7 @@
 import sys, os, logging
-from esam import Constants as c
-from esam.DataContainer import DataContainer
+import eons, esam
 
-class SimpleContainer(DataContainer):
-    def __init__(self, name=c.INVALID_NAME):
+class SimpleContainer(esam.SampleSet):
+    def __init__(self, name=eons.INVALID_NAME):
         logging.debug(f"init SimpleContainer")
         super().__init__(name)
