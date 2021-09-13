@@ -1,7 +1,7 @@
 import eons, esam
 
 class MSSpecies(esam.Datum):
-    def __init__(self, name=eons.INVALID_NAME):
+    def __init__(self, name=eons.INVALID_NAME()):
         super().__init__()
 
         #Absolute time at measurement is set as self.uniqueId

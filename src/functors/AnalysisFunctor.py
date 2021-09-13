@@ -24,10 +24,11 @@ class AnalysisFunctor(DataFunctor):
 
     def UserFunction(self, **kwargs):
         self.Analyze()
-        return self.data
+        return self.result.data
 
     def Clear(self):
         super().Clear()
+        self.result = SampleSet()
         self.config = SampleSet()
         self.standard = ""
     

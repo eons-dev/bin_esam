@@ -110,7 +110,7 @@ class ESAM(eons.Executor):
         self.GenerateOutput()
 
     def AnalyzeWith(self, functorName):
-        self.data = self.GetRegistered(functorName)(data=self.GetSampleData(), config=self.GetConfigData(), standard=self.args.std)
+        self.GetSampleData().data = self.GetRegistered(functorName)(data=self.GetSampleData(), config=self.GetConfigData(), standard=self.args.std)
 
     def IngestConfig(self):
         #we check for configFormat when validating input and GetRegistered will fail if it does not exist.
@@ -141,6 +141,7 @@ class ESAM(eons.Executor):
 
     #Removes any data specified with --only or --ignore
     def TrimData(self):
+        removed = []
         if (self.args.only):
             removed = self.GetSampleData().KeepOnlyDataBy(self.args.filter, list(self.args.only))
         elif (self.args.ignore):
